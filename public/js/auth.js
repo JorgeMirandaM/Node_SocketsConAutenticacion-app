@@ -27,7 +27,8 @@ miFormulario.addEventListener('submit', ev => {
             return console.log(msg);
         }
 
-        localStorage.setItem('token',token)
+        localStorage.setItem('token',token);
+        window.location='chat.html';
     })
     .catch(err =>{
         console.log(err);
@@ -52,6 +53,7 @@ function onSignIn(response) {
         .then(resp => {
             localStorage.setItem('email', resp.usuario.correo);
             localStorage.setItem('token', resp.token);
+            window.location='chat.html';
         })
         .catch(console.warn)
 
