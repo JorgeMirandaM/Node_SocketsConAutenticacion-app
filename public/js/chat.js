@@ -9,6 +9,7 @@ let socket = null;
 
 const txtUid= document.querySelector('#txtUid');
 const txtMensajes= document.querySelector('#txtMensajes');
+const textMensaje=document.querySelector('#textMensaje');
 const ulUsuarios= document.querySelector('#ulUsuarios');
 const ulMensajes= document.querySelector('#ulMensajes');
 const btnSalir= document.querySelector('#btnSalir');
@@ -56,8 +57,8 @@ const conectarSocket= async ()=>{
         console.log('Sockets offline');
     });
 
-    socket.on('recibir-mensajes',()=>{
-
+    socket.on('recibir-mensajes',(payload)=>{
+        console.log(payload);
     });
 
     socket.on('usuarios-activos',(payload)=>{
@@ -85,6 +86,18 @@ const dibujarUsuarios =(usuarios=[])=>{
 
     ulUsuarios.innerHTML= usersHTML;
 }
+
+textMensaje.addEventListener('keyup',({keyCode})=>{
+    const mensaje= textMensaje.value;
+    const uid=txtUid?.value;
+
+    if(keyCode !==13){return ;};
+    if(mensaje.length ===0){return;}
+
+    socket.emit('enviar-mensaje',{mensaje,uid});
+
+    textMensaje.value='';
+})
 
 const main = async () => {
 

@@ -19,7 +19,7 @@ class ChatMensajes{
 
     }
 
-    get ultimo10(){
+    get ultimos10(){
         this.mensajes=this.mensajes.splice(0,10);
         return this.mensajes;
     }
