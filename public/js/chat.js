@@ -7,12 +7,15 @@ const url = (window.location.hostname.includes('localhost'))
 let usuario = null;
 let socket = null;
 
-const txtUid= document.querySelector('#txtUid');
+let arrayMsgPriv = [];
+
+const txtUid= document.querySelector('#textUid');
 const txtMensajes= document.querySelector('#txtMensajes');
 const textMensaje=document.querySelector('#textMensaje');
 const ulUsuarios= document.querySelector('#ulUsuarios');
 const ulMensajes= document.querySelector('#ulMensajes');
 const btnSalir= document.querySelector('#btnSalir');
+const ulChatsPivados = document.querySelector('#ulChatsPivados');
 
 
 //Validar el token del localstorage
@@ -65,8 +68,8 @@ const conectarSocket= async ()=>{
         dibujarUsuarios(payload);
     });
 
-    socket.on('mensaje-privado',()=>{
-
+    socket.on('mensaje-privado',(payload)=>{
+        dibujarMensajesPrivados(payload);
     });
 }
 
@@ -105,6 +108,31 @@ const dibujarMensajes =(mensajes=[])=>{
     ulMensajes.innerHTML= mensajesHTML;
 }
 
+const dibujarMensajesPrivados=(mensajes)=>{
+
+    let mensajesHtml='';
+
+    arrayMsgPriv.unshift(mensajes);
+
+    arrayMsgPriv.forEach(({ de, mensaje }) => {
+        mensajesHtml += `
+            <p class="m-3 msgdynamic">
+                <span>De <span class="text-primary">${de}</span> para 
+
+                <br/>
+
+                <p class="bg-primary bg-opacity-25 msg">${mensaje}</p>
+            </p>
+            <hr/>
+        `;
+    })
+
+
+    ulChatsPivados.innerHTML = mensajesHtml;
+
+
+}
+
 
 textMensaje.addEventListener('keyup',({keyCode})=>{
     const mensaje= textMensaje.value;
@@ -116,6 +144,12 @@ textMensaje.addEventListener('keyup',({keyCode})=>{
     socket.emit('enviar-mensaje',{mensaje,uid});
 
     textMensaje.value='';
+    txtUid.value='';
+})
+
+btnSalir.addEventListener('click',()=>{
+    localStorage.clear();
+    location.reload();
 })
 
 const main = async () => {
